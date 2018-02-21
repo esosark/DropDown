@@ -409,6 +409,8 @@ public final class DropDown: UIView {
 			}
 		}
 	}
+    
+    public var rowDisplayCount : Int? 
 
 	fileprivate var minHeight: CGFloat {
 		return tableView.rowHeight
@@ -539,7 +541,9 @@ extension DropDown {
 		widthConstraint.constant = layout.width
 		heightConstraint.constant = layout.visibleHeight
 
-		tableView.isScrollEnabled = layout.offscreenHeight > 0
+		if rowDisplayCount == nil { 
+			tableView.isScrollEnabled = layout.offscreenHeight > 0 
+		}
 
 		DispatchQueue.main.async { [weak self] in
 			self?.tableView.flashScrollIndicators()
@@ -973,7 +977,8 @@ extension DropDown {
 
 	/// Returns the height needed to display all cells.
 	fileprivate var tableHeight: CGFloat {
-		return tableView.rowHeight * CGFloat(dataSource.count)
+        let rowDisplayHeight = rowDisplayCount != nil && dataSource.count > rowDisplayCount! ?  rowDisplayCount! : dataSource.count
+        return tableView.rowHeight * CGFloat(rowDisplayHeight)
 	}
 
     //MARK: Objective-C methods for converting the Swift type Index
